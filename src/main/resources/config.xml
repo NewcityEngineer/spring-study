@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="djNewsListener" class="com.newcitysoft.study.spring.bean.factory.DowJonesNewsListener"></bean>
+    <bean id="djPersister" class="com.newcitysoft.study.spring.bean.factory.DowJonesNewsPersister"></bean>
+
+    <bean id="djNewsProvider" class="com.newcitysoft.study.spring.bean.factory.FXNewsProvider">
+        <constructor-arg index="0">
+            <ref bean="djNewsListener"></ref>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <ref bean="djPersister"></ref>
+        </constructor-arg>
+    </bean>
+</beans>
