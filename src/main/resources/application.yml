@@ -1,0 +1,5 @@
+#spring.application.name=report-config
+
+spring:
+  application:
+    name: spring-study
