@@ -93,15 +93,16 @@ spring揭秘的学习项目
 #### 4.使用
 ##### 4.1 基于操作对象的jdbc使用方式
 ###### 4.1.1 基于操作对象的更新
+
 * 创建数据库表
 
 
-    CREATE TABLE `dept` (
-      `id` int(10) NOT NULL AUTO_INCREMENT,
-      `code` varchar(255) DEFAULT NULL,
-      `name` varchar(255) DEFAULT NULL,
-      PRIMARY KEY (`id`)
-    );    
+        CREATE TABLE `dept` (
+          `id` int(10) NOT NULL AUTO_INCREMENT,
+          `code` varchar(255) DEFAULT NULL,
+          `name` varchar(255) DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        );    
 
 * 创建对象
 
