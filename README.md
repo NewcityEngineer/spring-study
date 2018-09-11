@@ -107,170 +107,170 @@ spring揭秘的学习项目
 * 创建对象
 
     
-    import lombok.AllArgsConstructor;
-    import lombok.Builder;
-    import lombok.Data;
-    import lombok.NoArgsConstructor;
-    
-    /**
-     * @author lixin.tian@renren-inc.com
-     * @date 2018/9/11 10:02
-     */
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public class Dept {
-        private String code;
-        private String name;
-    }
+        import lombok.AllArgsConstructor;
+        import lombok.Builder;
+        import lombok.Data;
+        import lombok.NoArgsConstructor;
+        
+        /**
+         * @author lixin.tian@renren-inc.com
+         * @date 2018/9/11 10:02
+         */
+        @Data
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Builder
+        public class Dept {
+            private String code;
+            private String name;
+        }
 
 
 * 更新操作
 
     
-    import org.springframework.jdbc.core.SqlParameter;
-    import org.springframework.jdbc.object.SqlUpdate;
-    
-    import javax.sql.DataSource;
-    import java.sql.Types;
-    
-    /**
-     * @author lixin.tian@renren-inc.com
-     * @date 2018/9/11 9:49
-     */
-    public class DeptSqlUpdate extends SqlUpdate {
-    
-        private static final String SQL_UPDATE = "update dept set code=?,name=? where id=?";
-    
-        public DeptSqlUpdate(DataSource dataSource) {
-            super(dataSource, SQL_UPDATE);
-            declareParameter(new SqlParameter(Types.VARCHAR));
-            declareParameter(new SqlParameter(Types.VARCHAR));
-            declareParameter(new SqlParameter(Types.INTEGER));
-            compile();
+        import org.springframework.jdbc.core.SqlParameter;
+        import org.springframework.jdbc.object.SqlUpdate;
+        
+        import javax.sql.DataSource;
+        import java.sql.Types;
+        
+        /**
+         * @author lixin.tian@renren-inc.com
+         * @date 2018/9/11 9:49
+         */
+        public class DeptSqlUpdate extends SqlUpdate {
+        
+            private static final String SQL_UPDATE = "update dept set code=?,name=? where id=?";
+        
+            public DeptSqlUpdate(DataSource dataSource) {
+                super(dataSource, SQL_UPDATE);
+                declareParameter(new SqlParameter(Types.VARCHAR));
+                declareParameter(new SqlParameter(Types.VARCHAR));
+                declareParameter(new SqlParameter(Types.INTEGER));
+                compile();
+            }
+        
+            public int updateById(String code, String name, Integer id) {
+                return update(code, name, id);
+            }
         }
-    
-        public int updateById(String code, String name, Integer id) {
-            return update(code, name, id);
-        }
-    }
 
 * 增加操作
     
 
-    import org.springframework.jdbc.core.SqlParameter;
-    import org.springframework.jdbc.object.SqlUpdate;
-    
-    import javax.sql.DataSource;
-    import java.sql.Types;
-    
-    /**
-     * @author lixin.tian@renren-inc.com
-     * @date 2018/9/11 9:53
-     */
-    public class DeptSqlAdd extends SqlUpdate {
-    
-        private static final String SQL_ADD = "insert into dept(code,name) values(?,?)";
-    
-        public DeptSqlAdd(DataSource dataSource) {
-            super(dataSource, SQL_ADD);
-            declareParameter(new SqlParameter(Types.VARCHAR));
-            declareParameter(new SqlParameter(Types.VARCHAR));
-            compile();
+        import org.springframework.jdbc.core.SqlParameter;
+        import org.springframework.jdbc.object.SqlUpdate;
+        
+        import javax.sql.DataSource;
+        import java.sql.Types;
+        
+        /**
+         * @author lixin.tian@renren-inc.com
+         * @date 2018/9/11 9:53
+         */
+        public class DeptSqlAdd extends SqlUpdate {
+        
+            private static final String SQL_ADD = "insert into dept(code,name) values(?,?)";
+        
+            public DeptSqlAdd(DataSource dataSource) {
+                super(dataSource, SQL_ADD);
+                declareParameter(new SqlParameter(Types.VARCHAR));
+                declareParameter(new SqlParameter(Types.VARCHAR));
+                compile();
+            }
+        
+            public int add(String code, String name) {
+                return update(code, name);
+            }
         }
-    
-        public int add(String code, String name) {
-            return update(code, name);
-        }
-    }
     
     
 * 批量更新操作
 
 
-    import org.springframework.jdbc.core.SqlParameter;
-    import org.springframework.jdbc.object.BatchSqlUpdate;
-    
-    import javax.sql.DataSource;
-    import java.sql.Types;
-    import java.util.List;
-    
-    /**
-     * @author lixin.tian@renren-inc.com
-     * @date 2018/9/11 9:59
-     */
-    public class BatchInsertDept extends BatchSqlUpdate {
-    
-        private static final String SQL = "insert into dept(code,name) values(?,?)";
-    
-        public BatchInsertDept(DataSource dataSource) {
-            super(dataSource, SQL);
-            declareParameter(new SqlParameter(Types.VARCHAR));
-            declareParameter(new SqlParameter(Types.VARCHAR));
-            compile();
+        import org.springframework.jdbc.core.SqlParameter;
+        import org.springframework.jdbc.object.BatchSqlUpdate;
+        
+        import javax.sql.DataSource;
+        import java.sql.Types;
+        import java.util.List;
+        
+        /**
+         * @author lixin.tian@renren-inc.com
+         * @date 2018/9/11 9:59
+         */
+        public class BatchInsertDept extends BatchSqlUpdate {
+        
+            private static final String SQL = "insert into dept(code,name) values(?,?)";
+        
+            public BatchInsertDept(DataSource dataSource) {
+                super(dataSource, SQL);
+                declareParameter(new SqlParameter(Types.VARCHAR));
+                declareParameter(new SqlParameter(Types.VARCHAR));
+                compile();
+            }
+        
+            public void batchInsert(List<Dept> deptList) {
+                deptList.forEach(this::singleUpdate);
+                flush();
+            }
+        
+            private void singleUpdate(Dept dept) {
+                update(dept.getCode(), dept.getName());
+            }
         }
-    
-        public void batchInsert(List<Dept> deptList) {
-            deptList.forEach(this::singleUpdate);
-            flush();
-        }
-    
-        private void singleUpdate(Dept dept) {
-            update(dept.getCode(), dept.getName());
-        }
-    }
 
 测试用例如下：
     
-    import org.junit.Test;
-    import org.junit.runner.RunWith;
-    import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.boot.test.context.SpringBootTest;
-    import org.springframework.test.context.junit4.SpringRunner;
-    
-    import javax.sql.DataSource;
-    import java.util.ArrayList;
-    import java.util.List;
-    
-    /**
-     * @author lixin.tian@renren-inc.com
-     * @date 2018/9/11 10:07
-     */
-    @RunWith(SpringRunner.class)
-    @SpringBootTest
-    public class JdbcTest {
-    
-        @Autowired
-        private DataSource dataSource;
-    
-        @Test
-        public void deptAddTest() {
-            DeptSqlAdd add = new DeptSqlAdd(dataSource);
-    
-            add.add("caiwu", "财务部");
+        import org.junit.Test;
+        import org.junit.runner.RunWith;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.boot.test.context.SpringBootTest;
+        import org.springframework.test.context.junit4.SpringRunner;
+        
+        import javax.sql.DataSource;
+        import java.util.ArrayList;
+        import java.util.List;
+        
+        /**
+         * @author lixin.tian@renren-inc.com
+         * @date 2018/9/11 10:07
+         */
+        @RunWith(SpringRunner.class)
+        @SpringBootTest
+        public class JdbcTest {
+        
+            @Autowired
+            private DataSource dataSource;
+        
+            @Test
+            public void deptAddTest() {
+                DeptSqlAdd add = new DeptSqlAdd(dataSource);
+        
+                add.add("caiwu", "财务部");
+            }
+        
+            @Test
+            public void deptUpdateTest() {
+                DeptSqlUpdate update = new DeptSqlUpdate(dataSource);
+        
+                update.updateById("cw", "财务部", 1);
+            }
+        
+            @Test
+            public void deptBatchInsertTest() {
+                List<Dept> deptList = new ArrayList<>();
+        
+                deptList.add(Dept.builder().code("1").name("123").build());
+                deptList.add(Dept.builder().code("2").name("455").build());
+                deptList.add(Dept.builder().code("3").name("787").build());
+                deptList.add(Dept.builder().code("4").name("asdasda").build());
+                deptList.add(Dept.builder().code("5").name("qweqwe").build());
+                deptList.add(Dept.builder().code("5").name("qegqweq").build());
+        
+                BatchInsertDept batchInsertDept = new BatchInsertDept(dataSource);
+        
+                batchInsertDept.batchInsert(deptList);
+            }
         }
-    
-        @Test
-        public void deptUpdateTest() {
-            DeptSqlUpdate update = new DeptSqlUpdate(dataSource);
-    
-            update.updateById("cw", "财务部", 1);
-        }
-    
-        @Test
-        public void deptBatchInsertTest() {
-            List<Dept> deptList = new ArrayList<>();
-    
-            deptList.add(Dept.builder().code("1").name("123").build());
-            deptList.add(Dept.builder().code("2").name("455").build());
-            deptList.add(Dept.builder().code("3").name("787").build());
-            deptList.add(Dept.builder().code("4").name("asdasda").build());
-            deptList.add(Dept.builder().code("5").name("qweqwe").build());
-            deptList.add(Dept.builder().code("5").name("qegqweq").build());
-    
-            BatchInsertDept batchInsertDept = new BatchInsertDept(dataSource);
-    
-            batchInsertDept.batchInsert(deptList);
-        }
-    }
