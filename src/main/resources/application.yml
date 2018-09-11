@@ -3,3 +3,8 @@
 spring:
   application:
     name: spring-study
+  datasource:
+    url: jdbc:mysql://localhost:3306/springboot_demo?autoReconnect=true&characterEncoding=utf8
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
