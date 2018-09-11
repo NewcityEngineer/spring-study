@@ -4,6 +4,7 @@ import com.newcitysoft.study.spring.jdbc.operation.BatchInsertDept;
 import com.newcitysoft.study.spring.jdbc.operation.Dept;
 import com.newcitysoft.study.spring.jdbc.operation.DeptSqlAdd;
 import com.newcitysoft.study.spring.jdbc.operation.DeptSqlUpdate;
+import com.newcitysoft.study.spring.jdbc.operation.ImageLobDataAdd;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,5 +55,15 @@ public class JdbcTest {
         BatchInsertDept batchInsertDept = new BatchInsertDept(dataSource);
 
         batchInsertDept.batchInsert(deptList);
+    }
+
+    @Test
+    public void imageAddTest() {
+        ImageLobDataAdd add = new ImageLobDataAdd(dataSource);
+
+        String fileName = "2.png";
+        File file = new File("D:\\data\\2.png");
+
+        add.add(fileName, file);
     }
 }
